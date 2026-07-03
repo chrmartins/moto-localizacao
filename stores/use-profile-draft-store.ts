@@ -18,6 +18,8 @@ export interface ProfileDraft {
   bloodType: string;
   allergies: string;
   conditions: string;
+  motoModel: string;
+  motoPlate: string;
   message: string;
   theme: RiderTheme;
 }
@@ -32,6 +34,8 @@ const emptyDraft: ProfileDraft = {
   bloodType: "",
   allergies: "",
   conditions: "",
+  motoModel: "",
+  motoPlate: "",
   message: "",
   theme: "amber",
 };

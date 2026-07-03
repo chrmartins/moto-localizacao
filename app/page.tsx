@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Bike, QrCode, ShieldCheck, HeartPulse, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { PRICE } from "@/lib/pricing";
 
 // Landing temporária (placeholder). A landing de venda da Fase 1 entra aqui depois.
 export default function Home() {
@@ -32,6 +33,17 @@ export default function Home() {
         <Feature icon={<ShieldCheck className="size-5" />} title="Privacidade em camadas">
           O que salva vida é público; o que te identifica fica protegido.
         </Feature>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Button render={<Link href="/criar" />} size="lg" className="w-full">
+          Criar meu Rider ID
+          <ArrowRight className="size-4" />
+        </Button>
+        <p className="text-center text-xs text-muted-foreground">
+          {PRICE.amount}
+          {PRICE.period} · {PRICE.note}
+        </p>
       </div>
 
       <div className="mt-2 flex flex-col gap-3">

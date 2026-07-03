@@ -77,6 +77,80 @@ export type Profile = z.infer<typeof profileSchema>;
 
 export interface ProfileRepository {
   getProfileByToken(token: string): Promise<Profile | null>;
+  createProfile(input: CreateProfileInput): Promise<string>; // retorna o token
+}
+
+// Schema do que o questionário coleta (MVP). Espelha o rascunho do wizard.
+export const createProfileInputSchema = z.object({
+  name: z.string().trim().min(2, "Informe o nome completo"),
+  tagline: z.string().trim().max(60).optional().default(""),
+  emergencyContactName: z.string().trim().min(2, "Informe o contato de emergência"),
+  emergencyContactRelation: z.string().trim().min(2, "Informe o parentesco"),
+  emergencyContactPhone: z
+    .string()
+    .trim()
+    .min(10, "Telefone inválido")
+    .max(20, "Telefone inválido"),
+  bloodType: z.string().trim().min(1, "Informe o tipo sanguíneo"),
+  allergies: z.string().trim().default(""),
+  conditions: z.string().trim().default(""),
+  motoModel: z.string().trim().default(""),
+  motoPlate: z.string().trim().default(""),
+  message: z.string().trim().max(400).default(""),
+  theme: riderThemeSchema.default("amber"),
+});
+export type CreateProfileInput = z.infer<typeof createProfileInputSchema>;
+
+// Token público do QR: curto, aleatório e não-enumerável (10 chars).
+export function generateToken(): string {
+  return globalThis.crypto.randomUUID().replace(/-/g, "").slice(0, 10);
+}
+
+function normalizePhone(raw: string): { phone: string; phoneLabel: string; whatsapp: string } {
+  const digits = raw.replace(/\D/g, "");
+  const withCountry = digits.startsWith("55") ? digits : `55${digits}`;
+  return {
+    phone: `+${withCountry}`,
+    phoneLabel: raw.trim(),
+    whatsapp: withCountry,
+  };
+}
+
+function firstNameOf(name: string): string {
+  return name.trim().split(/\s+/)[0] ?? name;
+}
+
+function buildProfile(token: string, input: CreateProfileInput): Profile {
+  const contact = normalizePhone(input.emergencyContactPhone);
+  return {
+    token,
+    active: true,
+    revoked: false,
+    theme: input.theme,
+    demoMode: false,
+    name: input.name,
+    firstName: firstNameOf(input.name),
+    tagline: input.tagline || "Rider",
+    emergencyContact: {
+      name: input.emergencyContactName,
+      relation: input.emergencyContactRelation,
+      phone: contact.phone,
+      phoneLabel: contact.phoneLabel,
+      whatsapp: contact.whatsapp,
+    },
+    vitals: {
+      bloodType: input.bloodType,
+      allergies: input.allergies || "Nenhuma alergia relatada",
+      conditions: input.conditions || "Nenhuma condição pré-existente relatada",
+      age: "",
+      weight: "",
+      healthPlanPreference: "",
+    },
+    hospitals: [], // Fase 2: geolocalização + API de lugares
+    assistance: { towName: "", towPhone: "", insurer: "", policyNumber: "" },
+    moto: { model: input.motoModel, plate: input.motoPlate, healthPlan: "" },
+    message: input.message,
+  };
 }
 
 // ---------- Seed (implementação em memória) ----------
@@ -176,6 +250,15 @@ class InMemoryProfileRepository implements ProfileRepository {
     const profile = this.byToken.get(token);
     if (!profile || profile.revoked) return null;
     return profile;
+  }
+
+  async createProfile(input: CreateProfileInput): Promise<string> {
+    // NOTA: persistência em memória — sobrevive só no processo atual.
+    // Em produção (Vercel serverless), trocar por Postgres/Supabase.
+    let token = generateToken();
+    while (this.byToken.has(token)) token = generateToken();
+    this.byToken.set(token, buildProfile(token, input));
+    return token;
   }
 }
 

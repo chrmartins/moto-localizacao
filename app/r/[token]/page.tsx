@@ -212,11 +212,13 @@ function VitalsCard({ profile }: { profile: Profile }) {
         <Vital label="Condições de saúde" wide>
           {v.conditions}
         </Vital>
-        <Vital label="Idade">{v.age}</Vital>
-        <Vital label="Peso aprox.">{v.weight}</Vital>
-        <Vital label="Plano / preferência" wide>
-          {v.healthPlanPreference}
-        </Vital>
+        {v.age && <Vital label="Idade">{v.age}</Vital>}
+        {v.weight && <Vital label="Peso aprox.">{v.weight}</Vital>}
+        {v.healthPlanPreference && (
+          <Vital label="Plano / preferência" wide>
+            {v.healthPlanPreference}
+          </Vital>
+        )}
       </div>
     </section>
   );
@@ -260,6 +262,7 @@ function Vital({
 }
 
 function HospitalsCard({ profile }: { profile: Profile }) {
+  if (profile.hospitals.length === 0) return null;
   return (
     <section>
       <SectionTitle>Hospitais mais próximos</SectionTitle>
@@ -307,36 +310,44 @@ function HospitalsCard({ profile }: { profile: Profile }) {
 
 function SensitiveCard({ profile }: { profile: Profile }) {
   const a = profile.assistance;
+  const hasTow = Boolean(a.towPhone);
+  const hasPolicy = Boolean(a.policyNumber);
   return (
     <section>
       <SectionTitle>Assistência &amp; Seguro</SectionTitle>
       <Card className="gap-0 p-0">
         {/* Guincho é número de serviço — público. */}
-        <a
-          href={`tel:${a.towPhone}`}
-          className="flex items-center gap-3 p-3.5 transition-colors hover:bg-muted/40"
-        >
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
-            <Truck className="size-5" />
-          </span>
-          <span className="flex-1">
-            <span className="block text-sm font-semibold">Chamar guincho 24h</span>
-            <span className="block text-xs text-muted-foreground">
-              {a.towName} · retirar a moto da via
-            </span>
-          </span>
-          <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
-        </a>
-        <Separator />
+        {hasTow && (
+          <>
+            <a
+              href={`tel:${a.towPhone}`}
+              className="flex items-center gap-3 p-3.5 transition-colors hover:bg-muted/40"
+            >
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
+                <Truck className="size-5" />
+              </span>
+              <span className="flex-1">
+                <span className="block text-sm font-semibold">Chamar guincho 24h</span>
+                <span className="block text-xs text-muted-foreground">
+                  {a.towName} · retirar a moto da via
+                </span>
+              </span>
+              <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+            </a>
+            <Separator />
+          </>
+        )}
         {/* Apólice e telefone visível — sensível, atrás do gate. */}
         <div className="p-3.5">
           <SensitiveReveal>
             <div className="flex flex-col gap-3">
-              <InfoRow
-                icon={<ShieldCheck className="size-5" />}
-                k="Seguradora · apólice"
-                v={`${a.insurer} · ${a.policyNumber}`}
-              />
+              {hasPolicy && (
+                <InfoRow
+                  icon={<ShieldCheck className="size-5" />}
+                  k="Seguradora · apólice"
+                  v={`${a.insurer} · ${a.policyNumber}`}
+                />
+              )}
               <InfoRow
                 icon={<Phone className="size-5" />}
                 k={`Contato — ${profile.emergencyContact.name}`}
@@ -386,21 +397,35 @@ function MoreInfo({ profile }: { profile: Profile }) {
             <div className="text-lg font-bold">{profile.name}</div>
             <div className="text-sm text-muted-foreground">{profile.tagline}</div>
           </div>
-          <div className="flex flex-col gap-3">
-            <InfoRow icon={<Bike className="size-5" />} k="Moto" v={profile.moto.model} />
-            <InfoRow icon={<ShieldCheck className="size-5" />} k="Placa" v={profile.moto.plate} />
-            <InfoRow
-              icon={<HeartPulse className="size-5" />}
-              k="Plano de saúde"
-              v={profile.moto.healthPlan}
-            />
-          </div>
-          <div className="rounded-xl border border-primary/30 bg-primary/5 p-3">
-            <Badge variant="secondary" className="mb-2">
-              Recado do rider
-            </Badge>
-            <p className="text-sm text-muted-foreground">{profile.message}</p>
-          </div>
+          {(profile.moto.model || profile.moto.plate || profile.moto.healthPlan) && (
+            <div className="flex flex-col gap-3">
+              {profile.moto.model && (
+                <InfoRow icon={<Bike className="size-5" />} k="Moto" v={profile.moto.model} />
+              )}
+              {profile.moto.plate && (
+                <InfoRow
+                  icon={<ShieldCheck className="size-5" />}
+                  k="Placa"
+                  v={profile.moto.plate}
+                />
+              )}
+              {profile.moto.healthPlan && (
+                <InfoRow
+                  icon={<HeartPulse className="size-5" />}
+                  k="Plano de saúde"
+                  v={profile.moto.healthPlan}
+                />
+              )}
+            </div>
+          )}
+          {profile.message && (
+            <div className="rounded-xl border border-primary/30 bg-primary/5 p-3">
+              <Badge variant="secondary" className="mb-2">
+                Recado do rider
+              </Badge>
+              <p className="text-sm text-muted-foreground">{profile.message}</p>
+            </div>
+          )}
         </AccordionContent>
       </AccordionItem>
     </Accordion>
