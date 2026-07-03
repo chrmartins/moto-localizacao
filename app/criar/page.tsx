@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -65,6 +65,14 @@ export default function CriarPage() {
 
   const idx = STEPS.findIndex((s) => s.key === step);
 
+  // Aplica o tema escolhido ao próprio wizard, ao vivo.
+  const accent = themeAccent[draft.theme];
+  const themeStyle = {
+    "--primary": accent.primary,
+    "--ring": accent.ring,
+    "--accent": accent.accent,
+  } as CSSProperties;
+
   function goNext() {
     const result = stepSchemas[step].safeParse(draft);
     if (!result.success) {
@@ -107,7 +115,10 @@ export default function CriarPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-5 px-5 py-8">
+    <main
+      style={themeStyle}
+      className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-5 px-5 py-8"
+    >
       <Stepper current={idx} />
 
       {step === "dados" && <DadosStep draft={draft} update={update} />}

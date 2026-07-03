@@ -49,8 +49,13 @@ export default async function RiderProfilePage({
   return (
     <main
       style={themeStyle}
-      className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 px-4 pb-10 pt-[max(env(safe-area-inset-top),1rem)]"
+      className="relative mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 px-4 pb-10 pt-[max(env(safe-area-inset-top),1rem)]"
     >
+      {/* Faixa de brilho com a cor do tema (fica atrás do conteúdo) */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-56 bg-gradient-to-b from-primary/30 via-primary/10 to-transparent"
+      />
       <TopBar />
       <EmergencyBlock profile={profile} />
       {profile.demoMode && (
@@ -70,8 +75,8 @@ export default async function RiderProfilePage({
 function TopBar() {
   return (
     <div className="flex items-center justify-between pt-2">
-      <div className="flex items-center gap-2 text-sm font-bold tracking-wide">
-        <Bike className="size-5 text-primary" />
+      <div className="flex items-center gap-2 rounded-full border border-primary/30 bg-primary/15 px-3 py-1.5 text-sm font-bold tracking-wide text-primary">
+        <Bike className="size-5" />
         RIDER ID
       </div>
       <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
