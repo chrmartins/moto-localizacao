@@ -14,12 +14,8 @@ import {
   ChevronRight,
   Radio,
 } from "lucide-react";
-import {
-  profileRepository,
-  mapsDirUrl,
-  themeAccent,
-  type Profile,
-} from "@/lib/profiles";
+import { mapsDirUrl, themeAccent, type Profile } from "@/lib/profiles";
+import { getProfileByToken } from "@/lib/profile-repo";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -40,7 +36,7 @@ export default async function RiderProfilePage({
   params: Promise<{ token: string }>;
 }) {
   const { token } = await params;
-  const profile = await profileRepository.getProfileByToken(token);
+  const profile = await getProfileByToken(token);
   if (!profile) notFound();
 
   const accent = themeAccent[profile.theme];

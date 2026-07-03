@@ -87,6 +87,12 @@ export default function CriarPage() {
       await new Promise((r) => setTimeout(r, 900));
       const res = await createProfileAction(draft);
       if (!res.ok) {
+        if (res.needAuth) {
+          // Rascunho fica salvo (Zustand persist) — volta e conclui após login.
+          toast.message("Entre com o Google para salvar seu Rider ID");
+          router.push("/entrar?next=/criar");
+          return;
+        }
         toast.error(res.error);
         setSubmitting(false);
         return;

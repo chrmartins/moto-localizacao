@@ -118,7 +118,7 @@ function firstNameOf(name: string): string {
   return name.trim().split(/\s+/)[0] ?? name;
 }
 
-function buildProfile(token: string, input: CreateProfileInput): Profile {
+export function buildProfile(token: string, input: CreateProfileInput): Profile {
   const contact = normalizePhone(input.emergencyContactPhone);
   return {
     token,
