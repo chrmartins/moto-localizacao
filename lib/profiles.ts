@@ -55,12 +55,9 @@ export const profileSchema = z.object({
 
   hospitals: z.array(hospitalSchema),
 
-  // Sensível: revelado só sob o gate "isto é uma emergência real".
+  // Telefone de emergência/assistência 24h do seguro (número de serviço, público).
   assistance: z.object({
-    towName: z.string(),
-    towPhone: z.string(),
-    insurer: z.string(),
-    policyNumber: z.string(),
+    phone: z.string(),
   }),
 
   moto: z.object({
@@ -96,10 +93,7 @@ export const createProfileInputSchema = z.object({
   conditions: z.string().trim().default(""),
   motoModel: z.string().trim().default(""),
   motoPlate: z.string().trim().default(""),
-  insurer: z.string().trim().default(""),
-  policyNumber: z.string().trim().default(""),
-  towName: z.string().trim().default(""),
-  towPhone: z.string().trim().default(""),
+  insurancePhone: z.string().trim().default(""),
   message: z.string().trim().max(400).default(""),
   theme: riderThemeSchema.default("amber"),
 });
@@ -151,12 +145,7 @@ function buildProfile(token: string, input: CreateProfileInput): Profile {
       healthPlanPreference: "",
     },
     hospitals: [], // Fase 2: geolocalização + API de lugares
-    assistance: {
-      towName: input.towName,
-      towPhone: input.towPhone.replace(/\D/g, ""),
-      insurer: input.insurer,
-      policyNumber: input.policyNumber,
-    },
+    assistance: { phone: input.insurancePhone.replace(/\D/g, "") },
     moto: { model: input.motoModel, plate: input.motoPlate, healthPlan: "" },
     message: input.message,
   };
@@ -194,12 +183,7 @@ const seedProfiles: Profile[] = [
       { name: "Hospital das Clínicas", info: "Trauma / emergência", emergency: true, distanceKm: "2,8 km", timeMin: "~9 min", mapsQuery: "Hospital das Clínicas FMUSP" },
       { name: "Hospital Sírio-Libanês", info: "Pronto atendimento", emergency: false, distanceKm: "3,5 km", timeMin: "~11 min", mapsQuery: "Hospital Sírio-Libanês São Paulo" },
     ],
-    assistance: {
-      towName: "Porto Seguro Assistência",
-      towPhone: "08007001234",
-      insurer: "Porto Seguro",
-      policyNumber: "12.345.678-9",
-    },
+    assistance: { phone: "08007001234" },
     moto: {
       model: "Honda XRE 300 · 2024 · Vermelha/Preta",
       plate: "ABC-1D23",
@@ -236,12 +220,7 @@ const seedProfiles: Profile[] = [
       { name: "Hospital João XXIII", info: "Trauma / emergência 24h", emergency: true, distanceKm: "2,1 km", timeMin: "~7 min", mapsQuery: "Hospital João XXIII Belo Horizonte" },
       { name: "Hospital Felício Rocho", info: "Pronto-socorro", emergency: true, distanceKm: "3,0 km", timeMin: "~10 min", mapsQuery: "Hospital Felício Rocho Belo Horizonte" },
     ],
-    assistance: {
-      towName: "Tokio Marine Assistência",
-      towPhone: "08007266100",
-      insurer: "Tokio Marine",
-      policyNumber: "98.765.432-1",
-    },
+    assistance: { phone: "08007266100" },
     moto: {
       model: "Yamaha Ténéré 250 · 2023 · Azul",
       plate: "XYZ-2E45",

@@ -318,44 +318,22 @@ function SeguroStep({ draft, update }: StepProps) {
   return (
     <div className="flex flex-col gap-4">
       <StepHeader
-        title="Assistência 24h & Seguro"
-        subtitle="Opcional. Dados sensíveis — ficam protegidos atrás do gate de emergência no perfil."
+        title="Assistência 24h do seguro"
+        subtitle="Opcional. Vira um botão no perfil que liga direto para a assistência 24h."
       />
-      <Field id="insurer" label="Seguradora (opcional)">
+      <Field
+        id="insurancePhone"
+        label="Telefone da assistência 24h"
+        hint="Com DDD ou 0800. No perfil, quem socorrer toca e liga na hora."
+      >
         <Input
-          id="insurer"
-          value={draft.insurer}
-          onChange={(e) => update({ insurer: e.target.value })}
-          placeholder="Ex: Porto Seguro"
+          id="insurancePhone"
+          inputMode="tel"
+          value={draft.insurancePhone}
+          onChange={(e) => update({ insurancePhone: e.target.value })}
+          placeholder="Ex: 0800 700 1234"
         />
       </Field>
-      <Field id="policy" label="Número da apólice (opcional)">
-        <Input
-          id="policy"
-          value={draft.policyNumber}
-          onChange={(e) => update({ policyNumber: e.target.value })}
-          placeholder="Ex: 12.345.678-9"
-        />
-      </Field>
-      <div className="grid grid-cols-2 gap-3">
-        <Field id="towName" label="Assistência / guincho (opcional)">
-          <Input
-            id="towName"
-            value={draft.towName}
-            onChange={(e) => update({ towName: e.target.value })}
-            placeholder="Ex: Porto Assistência"
-          />
-        </Field>
-        <Field id="towPhone" label="Telefone do guincho">
-          <Input
-            id="towPhone"
-            inputMode="tel"
-            value={draft.towPhone}
-            onChange={(e) => update({ towPhone: e.target.value })}
-            placeholder="Ex: 0800 700 1234"
-          />
-        </Field>
-      </div>
     </div>
   );
 }

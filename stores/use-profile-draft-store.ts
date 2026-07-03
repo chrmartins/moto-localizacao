@@ -20,10 +20,7 @@ export interface ProfileDraft {
   conditions: string;
   motoModel: string;
   motoPlate: string;
-  insurer: string;
-  policyNumber: string;
-  towName: string;
-  towPhone: string;
+  insurancePhone: string;
   message: string;
   theme: RiderTheme;
 }
@@ -40,10 +37,7 @@ const emptyDraft: ProfileDraft = {
   conditions: "",
   motoModel: "",
   motoPlate: "",
-  insurer: "",
-  policyNumber: "",
-  towName: "",
-  towPhone: "",
+  insurancePhone: "",
   message: "",
   theme: "amber",
 };

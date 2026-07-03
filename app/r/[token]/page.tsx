@@ -8,7 +8,7 @@ import {
   HeartPulse,
   Hospital,
   Navigation,
-  Truck,
+  LifeBuoy,
   ShieldCheck,
   Bike,
   ChevronRight,
@@ -309,27 +309,27 @@ function HospitalsCard({ profile }: { profile: Profile }) {
 }
 
 function SensitiveCard({ profile }: { profile: Profile }) {
-  const a = profile.assistance;
-  const hasTow = Boolean(a.towPhone);
-  const hasPolicy = Boolean(a.policyNumber);
+  const insurancePhone = profile.assistance.phone;
   return (
     <section>
       <SectionTitle>Assistência &amp; Seguro</SectionTitle>
       <Card className="gap-0 p-0">
-        {/* Guincho é número de serviço — público. */}
-        {hasTow && (
+        {/* Assistência 24h do seguro — número de serviço, público. Toca e liga. */}
+        {insurancePhone && (
           <>
             <a
-              href={`tel:${a.towPhone}`}
+              href={`tel:${insurancePhone}`}
               className="flex items-center gap-3 p-3.5 transition-colors hover:bg-muted/40"
             >
               <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
-                <Truck className="size-5" />
+                <LifeBuoy className="size-5" />
               </span>
               <span className="flex-1">
-                <span className="block text-sm font-semibold">Chamar guincho 24h</span>
+                <span className="block text-sm font-semibold">
+                  Ligar para a assistência 24h
+                </span>
                 <span className="block text-xs text-muted-foreground">
-                  {a.towName} · retirar a moto da via
+                  Guincho e apoio do seguro · toque para ligar
                 </span>
               </span>
               <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
@@ -337,23 +337,14 @@ function SensitiveCard({ profile }: { profile: Profile }) {
             <Separator />
           </>
         )}
-        {/* Apólice e telefone visível — sensível, atrás do gate. */}
+        {/* Telefone da família — pessoal, atrás do gate de emergência. */}
         <div className="p-3.5">
           <SensitiveReveal>
-            <div className="flex flex-col gap-3">
-              {hasPolicy && (
-                <InfoRow
-                  icon={<ShieldCheck className="size-5" />}
-                  k="Seguradora · apólice"
-                  v={`${a.insurer} · ${a.policyNumber}`}
-                />
-              )}
-              <InfoRow
-                icon={<Phone className="size-5" />}
-                k={`Contato — ${profile.emergencyContact.name}`}
-                v={profile.emergencyContact.phoneLabel}
-              />
-            </div>
+            <InfoRow
+              icon={<Phone className="size-5" />}
+              k={`Contato — ${profile.emergencyContact.name}`}
+              v={profile.emergencyContact.phoneLabel}
+            />
           </SensitiveReveal>
         </div>
       </Card>
