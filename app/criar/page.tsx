@@ -34,6 +34,7 @@ import { Card } from "@/components/ui/card";
 const STEPS: { key: DraftStep; label: string }[] = [
   { key: "dados", label: "Dados" },
   { key: "vitais", label: "Vitais" },
+  { key: "seguro", label: "Seguro" },
   { key: "tema", label: "Tema" },
   { key: "pagamento", label: "Pagamento" },
 ];
@@ -47,6 +48,7 @@ const stepSchemas: Record<DraftStep, z.ZodTypeAny> = {
     emergencyContactPhone: true,
   }),
   vitais: createProfileInputSchema.pick({ bloodType: true }),
+  seguro: z.object({}), // toda a seção é opcional
   tema: z.object({}),
   pagamento: z.object({}),
 };
@@ -104,6 +106,7 @@ export default function CriarPage() {
 
       {step === "dados" && <DadosStep draft={draft} update={update} />}
       {step === "vitais" && <VitaisStep draft={draft} update={update} />}
+      {step === "seguro" && <SeguroStep draft={draft} update={update} />}
       {step === "tema" && <TemaStep draft={draft} update={update} />}
       {step === "pagamento" && <PagamentoStep draft={draft} />}
 
@@ -307,6 +310,52 @@ function VitaisStep({ draft, update }: StepProps) {
           rows={3}
         />
       </Field>
+    </div>
+  );
+}
+
+function SeguroStep({ draft, update }: StepProps) {
+  return (
+    <div className="flex flex-col gap-4">
+      <StepHeader
+        title="Assistência 24h & Seguro"
+        subtitle="Opcional. Dados sensíveis — ficam protegidos atrás do gate de emergência no perfil."
+      />
+      <Field id="insurer" label="Seguradora (opcional)">
+        <Input
+          id="insurer"
+          value={draft.insurer}
+          onChange={(e) => update({ insurer: e.target.value })}
+          placeholder="Ex: Porto Seguro"
+        />
+      </Field>
+      <Field id="policy" label="Número da apólice (opcional)">
+        <Input
+          id="policy"
+          value={draft.policyNumber}
+          onChange={(e) => update({ policyNumber: e.target.value })}
+          placeholder="Ex: 12.345.678-9"
+        />
+      </Field>
+      <div className="grid grid-cols-2 gap-3">
+        <Field id="towName" label="Assistência / guincho (opcional)">
+          <Input
+            id="towName"
+            value={draft.towName}
+            onChange={(e) => update({ towName: e.target.value })}
+            placeholder="Ex: Porto Assistência"
+          />
+        </Field>
+        <Field id="towPhone" label="Telefone do guincho">
+          <Input
+            id="towPhone"
+            inputMode="tel"
+            value={draft.towPhone}
+            onChange={(e) => update({ towPhone: e.target.value })}
+            placeholder="Ex: 0800 700 1234"
+          />
+        </Field>
+      </div>
     </div>
   );
 }

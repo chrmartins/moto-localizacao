@@ -6,7 +6,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { RiderTheme } from "@/lib/profiles";
 
-export type DraftStep = "dados" | "vitais" | "tema" | "pagamento";
+export type DraftStep = "dados" | "vitais" | "seguro" | "tema" | "pagamento";
 
 export interface ProfileDraft {
   name: string;
@@ -20,6 +20,10 @@ export interface ProfileDraft {
   conditions: string;
   motoModel: string;
   motoPlate: string;
+  insurer: string;
+  policyNumber: string;
+  towName: string;
+  towPhone: string;
   message: string;
   theme: RiderTheme;
 }
@@ -36,6 +40,10 @@ const emptyDraft: ProfileDraft = {
   conditions: "",
   motoModel: "",
   motoPlate: "",
+  insurer: "",
+  policyNumber: "",
+  towName: "",
+  towPhone: "",
   message: "",
   theme: "amber",
 };

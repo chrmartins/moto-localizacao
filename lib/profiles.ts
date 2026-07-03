@@ -96,6 +96,10 @@ export const createProfileInputSchema = z.object({
   conditions: z.string().trim().default(""),
   motoModel: z.string().trim().default(""),
   motoPlate: z.string().trim().default(""),
+  insurer: z.string().trim().default(""),
+  policyNumber: z.string().trim().default(""),
+  towName: z.string().trim().default(""),
+  towPhone: z.string().trim().default(""),
   message: z.string().trim().max(400).default(""),
   theme: riderThemeSchema.default("amber"),
 });
@@ -147,7 +151,12 @@ function buildProfile(token: string, input: CreateProfileInput): Profile {
       healthPlanPreference: "",
     },
     hospitals: [], // Fase 2: geolocalização + API de lugares
-    assistance: { towName: "", towPhone: "", insurer: "", policyNumber: "" },
+    assistance: {
+      towName: input.towName,
+      towPhone: input.towPhone.replace(/\D/g, ""),
+      insurer: input.insurer,
+      policyNumber: input.policyNumber,
+    },
     moto: { model: input.motoModel, plate: input.motoPlate, healthPlan: "" },
     message: input.message,
   };
