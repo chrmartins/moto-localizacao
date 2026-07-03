@@ -2,10 +2,12 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import Image from "next/image";
 import QRCode from "qrcode";
-import { CheckCircle2, ExternalLink, Info } from "lucide-react";
+import { CheckCircle2, ExternalLink } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { QrDownload } from "@/components/rider/qr-download";
+import { PrintArts } from "@/components/rider/print-arts";
+import { getProfileByToken } from "@/lib/profile-repo";
 
 export const dynamic = "force-dynamic";
 
@@ -46,6 +48,8 @@ export default async function SucessoPage({
     color: { dark: "#0d0f12", light: "#ffffff" },
   });
 
+  const profile = await getProfileByToken(token);
+
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-5 px-5 py-8">
       <div className="flex flex-col items-center gap-2 text-center">
@@ -83,13 +87,14 @@ export default async function SucessoPage({
         </Button>
       </div>
 
-      <div className="flex items-start gap-2 rounded-xl border border-dashed border-border bg-muted/30 p-3 text-xs text-muted-foreground">
-        <Info className="mt-0.5 size-4 shrink-0 text-primary" />
-        <span>
-          Nesta versão de demonstração o perfil fica em memória e pode não sobreviver a reinícios do
-          servidor. Ao plugar o banco (Supabase), o QR passa a ser permanente.
-        </span>
-      </div>
+      <PrintArts
+        firstName={profile?.firstName ?? ""}
+        name={profile?.name ?? ""}
+        bloodType={profile?.vitals.bloodType ?? ""}
+        theme={profile?.theme ?? "amber"}
+        qrDataUrl={qrDataUrl}
+        token={token}
+      />
     </main>
   );
 }

@@ -13,6 +13,7 @@ import { signOutAction } from "@/lib/auth-actions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { QrDownload } from "@/components/rider/qr-download";
+import { PrintArts } from "@/components/rider/print-arts";
 import { ProfileEditor, type EditableProfile } from "@/components/painel/profile-editor";
 
 export const dynamic = "force-dynamic";
@@ -162,6 +163,15 @@ async function ProfileSection({
           Editar os dados abaixo não muda o QR — o mesmo código segue válido no capacete.
         </p>
       </Card>
+
+      <PrintArts
+        firstName={profile.firstName}
+        name={profile.name}
+        bloodType={profile.vitals.bloodType}
+        theme={profile.theme}
+        qrDataUrl={qrDataUrl}
+        token={profile.token}
+      />
 
       <h2 className="text-sm font-semibold text-muted-foreground">Editar cadastro</h2>
       <ProfileEditor initial={initial} />
