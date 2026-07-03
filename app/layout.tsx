@@ -1,5 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/sonner";
+
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "Rider ID · Emergência",
@@ -20,8 +25,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR">
-      <body>{children}</body>
+    <html lang="pt-BR" className={cn("dark font-sans", geist.variable)}>
+      <body>
+        {children}
+        <Toaster richColors position="top-center" />
+      </body>
     </html>
   );
 }
