@@ -22,7 +22,7 @@ export const hospitalSchema = z.object({
 export type Hospital = z.infer<typeof hospitalSchema>;
 
 export const profileSchema = z.object({
-  // Token público do QR (vem na URL /r/{token}). Revogável sem apagar o perfil.
+  // Token público do QR (vem na URL /perfil/{token}). Revogável sem apagar o perfil.
   token: z.string().min(4),
   // Assinatura ativa habilita features premium (edição, notificação de scan).
   // A camada que salva vida é renderizada mesmo com a assinatura vencida.

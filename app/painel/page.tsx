@@ -71,7 +71,7 @@ export default async function PainelPage() {
       </Card>
 
       {profile ? (
-        <ProfileSection profileUrl={`${await baseUrl()}/r/${profile.token}`} profile={profile} />
+        <ProfileSection profileUrl={`${await baseUrl()}/perfil/${profile.token}`} profile={profile} />
       ) : (
         <Card className="items-start gap-3 p-5">
           <h2 className="text-base font-bold">Você ainda não criou seu Rider ID</h2>
@@ -150,7 +150,7 @@ async function ProfileSection({
         <div className="flex w-full flex-col gap-2">
           <QrDownload dataUrl={qrDataUrl} filename={`rider-id-${profile.token}.png`} />
           <Button
-            render={<Link href={`/r/${profile.token}`} target="_blank" />}
+            render={<Link href={`/perfil/${profile.token}`} target="_blank" />}
             variant="secondary"
             size="lg"
           >

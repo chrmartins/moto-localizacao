@@ -5,7 +5,7 @@
 create table if not exists public.profiles (
   id                  uuid primary key default gen_random_uuid(),
   user_id             uuid not null references auth.users (id) on delete cascade,
-  token               text not null unique,          -- token público do QR (/r/{token})
+  token               text not null unique,          -- token público do QR (/perfil/{token})
   active              boolean not null default true,  -- assinatura ativa (features premium)
   revoked             boolean not null default false, -- QR revogado (capacete vendido/perdido)
   theme               text not null default 'amber'

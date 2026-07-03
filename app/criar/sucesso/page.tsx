@@ -37,7 +37,7 @@ export default async function SucessoPage({
     );
   }
 
-  const profileUrl = `${await baseUrl()}/r/${token}`;
+  const profileUrl = `${await baseUrl()}/perfil/${token}`;
   // QR escuro sobre branco: máximo contraste para leitura em qualquer condição.
   const qrDataUrl = await QRCode.toDataURL(profileUrl, {
     width: 512,
@@ -77,7 +77,7 @@ export default async function SucessoPage({
 
       <div className="flex flex-col gap-2.5">
         <QrDownload dataUrl={qrDataUrl} filename={`rider-id-${token}.png`} />
-        <Button render={<Link href={`/r/${token}`} target="_blank" />} variant="secondary" size="lg">
+        <Button render={<Link href={`/perfil/${token}`} target="_blank" />} variant="secondary" size="lg">
           <ExternalLink className="size-4" />
           Ver meu perfil de emergência
         </Button>

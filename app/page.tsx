@@ -57,7 +57,7 @@ export default function Home() {
         </p>
         <div className="flex flex-col gap-2">
           <Button
-            render={<Link href="/r/k7bx9m2q" />}
+            render={<Link href="/perfil/k7bx9m2q" />}
             variant="secondary"
             className="justify-between"
           >
@@ -65,7 +65,7 @@ export default function Home() {
             <ArrowRight className="size-4" />
           </Button>
           <Button
-            render={<Link href="/r/p3fw8ha2" />}
+            render={<Link href="/perfil/p3fw8ha2" />}
             variant="secondary"
             className="justify-between"
           >
