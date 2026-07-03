@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Check, Loader2, Save } from "lucide-react";
+import { Bike, Check, Loader2, Save } from "lucide-react";
 import { RIDER_THEMES, themeAccent, type RiderTheme } from "@/lib/profiles";
 import { updateProfileAction } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
@@ -43,6 +43,14 @@ export function ProfileEditor({ initial }: { initial: EditableProfile }) {
     setForm((f) => ({ ...f, [key]: value }));
   }
 
+  // Reflete a cor escolhida ao vivo no editor.
+  const accent = themeAccent[form.theme];
+  const themeStyle = {
+    "--primary": accent.primary,
+    "--ring": accent.ring,
+    "--accent": accent.accent,
+  } as CSSProperties;
+
   async function save() {
     setSaving(true);
     const res = await updateProfileAction(form);
@@ -56,7 +64,7 @@ export function ProfileEditor({ initial }: { initial: EditableProfile }) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div style={themeStyle} className="flex flex-col gap-4">
       <Group title="Dados">
         <FieldRow id="name" label="Nome completo">
           <Input id="name" value={form.name} onChange={(e) => set("name", e.target.value)} />
@@ -185,6 +193,14 @@ export function ProfileEditor({ initial }: { initial: EditableProfile }) {
             );
           })}
         </div>
+        <div className="mt-1 flex items-center gap-2 rounded-xl border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary">
+          <Bike className="size-4" />
+          Prévia da cor no seu perfil
+        </div>
+        <p className="text-xs text-muted-foreground">
+          A troca vale no seu perfil (o QR aponta pra ele). Toque em “Ver meu perfil” acima
+          depois de salvar.
+        </p>
       </Group>
 
       <Button onClick={save} disabled={saving} size="lg" className="w-full">

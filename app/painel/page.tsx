@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { headers } from "next/headers";
 import Link from "next/link";
 import Image from "next/image";
@@ -6,6 +7,7 @@ import QRCode from "qrcode";
 import { Bike, LogOut, UserRound, QrCode, ExternalLink, ArrowRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { themeAccent } from "@/lib/profiles";
 import { supabaseGetMyProfile } from "@/lib/supabase/profiles-repo";
 import { signOutAction } from "@/lib/auth-actions";
 import { Button } from "@/components/ui/button";
@@ -102,6 +104,13 @@ async function ProfileSection({
     color: { dark: "#0d0f12", light: "#ffffff" },
   });
 
+  const accent = themeAccent[profile.theme];
+  const themeStyle = {
+    "--primary": accent.primary,
+    "--ring": accent.ring,
+    "--accent": accent.accent,
+  } as CSSProperties;
+
   const initial: EditableProfile = {
     name: profile.name,
     tagline: profile.tagline === "Rider" ? "" : profile.tagline,
@@ -119,7 +128,7 @@ async function ProfileSection({
   };
 
   return (
-    <>
+    <div style={themeStyle} className="flex flex-col gap-5">
       <Card className="items-center gap-4 p-5">
         <div className="flex items-center gap-2 self-start text-sm font-semibold">
           <QrCode className="size-4 text-primary" />
@@ -156,6 +165,6 @@ async function ProfileSection({
 
       <h2 className="text-sm font-semibold text-muted-foreground">Editar cadastro</h2>
       <ProfileEditor initial={initial} />
-    </>
+    </div>
   );
 }
