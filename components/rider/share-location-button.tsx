@@ -1,7 +1,13 @@
 "use client";
 
+import {
+  ChevronRight,
+  ExternalLink,
+  Loader2,
+  MapPin,
+  Send,
+} from "lucide-react";
 import { useEffect, useState } from "react";
-import { ChevronRight, ExternalLink, Loader2, MapPin, Send } from "lucide-react";
 
 type LocState =
   | { status: "loading" }
@@ -35,12 +41,17 @@ export function ShareLocationButton({
     );
   }
 
-  useEffect(() => { requestGeo(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    requestGeo();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function sendWhatsApp() {
     if (loc.status !== "located") return;
     const msg = `EMERGÊNCIA: encontrei o(a) ${firstName} acidentado(a). Localização atual: ${loc.mapsUrl}`;
-    window.open(`https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
+    window.open(
+      `https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}`,
+      "_blank",
+    );
   }
 
   /* ── mapa (≈3 cm de altura) ── */
@@ -63,7 +74,9 @@ export function ShareLocationButton({
         >
           <div className="flex flex-col items-center gap-1.5">
             <MapPin className="size-4" />
-            <span className="text-xs">GPS indisponível — toque para tentar novamente</span>
+            <span className="text-xs">
+              GPS indisponível — toque para tentar novamente
+            </span>
           </div>
         </button>
       );
@@ -94,7 +107,9 @@ export function ShareLocationButton({
       {loc.status === "located" && (
         <div className="flex items-center gap-2 px-1 text-xs text-muted-foreground">
           <MapPin className="size-3 shrink-0 text-primary" />
-          <span className="font-mono">{loc.lat.toFixed(5)}, {loc.lng.toFixed(5)}</span>
+          <span className="font-mono">
+            {loc.lat.toFixed(5)}, {loc.lng.toFixed(5)}
+          </span>
           <a
             href={loc.mapsUrl}
             target="_blank"
@@ -115,8 +130,12 @@ export function ShareLocationButton({
           <Send className="size-5" />
         </span>
         <span className="flex-1 text-white">
-          <span className="block text-sm font-semibold">Enviar localização no WhatsApp</span>
-          <span className="block text-xs text-white/80">Manda o ponto exato para a família agora</span>
+          <span className="block text-sm font-semibold">
+            Enviar localização no WhatsApp
+          </span>
+          <span className="block text-xs text-white/80">
+            Manda o ponto exato para a família agora
+          </span>
         </span>
         <ChevronRight className="size-4 shrink-0 text-white/70" />
       </button>
