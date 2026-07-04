@@ -105,20 +105,20 @@ export function ShareLocationButton({
       <button
         onClick={sendWhatsApp}
         disabled={loc.status !== "located"}
-        className="flex items-center gap-3 rounded-xl bg-[#25D366] px-4 py-3 text-left shadow-lg shadow-[#25D366]/30 transition-transform active:scale-[0.99] disabled:opacity-40"
+        className="flex items-center gap-3 rounded-xl border border-border bg-secondary px-4 py-3 text-left text-secondary-foreground transition-transform active:scale-[0.99] disabled:opacity-40"
       >
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/20 text-white">
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
           <Send className="size-5" />
         </span>
-        <span className="flex-1 text-white">
+        <span className="flex-1">
           <span className="block text-sm font-semibold">
             Enviar localização no WhatsApp
           </span>
-          <span className="block text-xs text-white/80">
+          <span className="block text-xs text-muted-foreground">
             Manda o ponto exato para a família agora
           </span>
         </span>
-        <ChevronRight className="size-4 shrink-0 text-white/70" />
+        <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
       </button>
 
       {mapArea}
