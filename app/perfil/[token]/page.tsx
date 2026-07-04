@@ -11,11 +11,14 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getProfileByToken } from "@/lib/profile-repo";
 import { mapsDirUrl, themeAccent, type Profile } from "@/lib/profiles";
+import { createClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/env";
 import {
   Bike,
   ChevronRight,
   HeartPulse,
   Hospital,
+  LayoutDashboard,
   LifeBuoy,
   Navigation,
   Phone,
@@ -39,6 +42,17 @@ export default async function RiderProfilePage({
   const profile = await getProfileByToken(token);
   if (!profile) notFound();
 
+  // Mostra o atalho pro painel só se houver sessão. Bystander anônimo não tem
+  // cookie de auth, então getUser retorna sem ir à rede — não pesa no socorro.
+  let loggedIn = false;
+  if (isSupabaseConfigured) {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    loggedIn = Boolean(user);
+  }
+
   const accent = themeAccent[profile.theme];
   const themeStyle = {
     "--primary": accent.primary,
@@ -56,7 +70,7 @@ export default async function RiderProfilePage({
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-56 bg-gradient-to-b from-primary/30 via-primary/10 to-transparent"
       />
-      <TopBar />
+      <TopBar loggedIn={loggedIn} />
       <EmergencyBlock profile={profile} />
       {profile.demoMode && (
         <p className="rounded-lg bg-muted/50 px-3 py-2 text-center text-xs text-muted-foreground">
@@ -72,17 +86,27 @@ export default async function RiderProfilePage({
   );
 }
 
-function TopBar() {
+function TopBar({ loggedIn }: { loggedIn: boolean }) {
   return (
     <div className="flex items-center justify-between pt-2">
       <div className="flex items-center gap-2 rounded-full border border-primary/30 bg-primary/15 px-3 py-1.5 text-sm font-bold tracking-wide text-primary">
         <Bike className="size-5" />
         RIDER ID
       </div>
-      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-        <Radio className="size-3.5 text-success" />
-        Perfil de emergência
-      </div>
+      {loggedIn ? (
+        <Link
+          href="/painel"
+          className="flex items-center gap-1.5 rounded-full border border-border bg-secondary px-3 py-1.5 text-xs font-semibold text-secondary-foreground transition-colors hover:bg-muted"
+        >
+          <LayoutDashboard className="size-3.5" />
+          Meu painel
+        </Link>
+      ) : (
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <Radio className="size-3.5 text-success" />
+          Perfil de emergência
+        </div>
+      )}
     </div>
   );
 }
