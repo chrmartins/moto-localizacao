@@ -102,25 +102,6 @@ export function ShareLocationButton({
 
   return (
     <div className="flex flex-col gap-2">
-      {mapArea}
-
-      {loc.status === "located" && (
-        <div className="flex items-center gap-2 px-1 text-xs text-muted-foreground">
-          <MapPin className="size-3 shrink-0 text-primary" />
-          <span className="font-mono">
-            {loc.lat.toFixed(5)}, {loc.lng.toFixed(5)}
-          </span>
-          <a
-            href={loc.mapsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ml-auto flex items-center gap-1 text-primary underline-offset-2 hover:underline"
-          >
-            Maps <ExternalLink className="size-3" />
-          </a>
-        </div>
-      )}
-
       <button
         onClick={sendWhatsApp}
         disabled={loc.status !== "located"}
@@ -139,6 +120,25 @@ export function ShareLocationButton({
         </span>
         <ChevronRight className="size-4 shrink-0 text-white/70" />
       </button>
+
+      {mapArea}
+
+      {loc.status === "located" && (
+        <div className="flex items-center gap-2 px-1 text-xs text-muted-foreground">
+          <MapPin className="size-3 shrink-0 text-primary" />
+          <span className="font-mono">
+            {loc.lat.toFixed(5)}, {loc.lng.toFixed(5)}
+          </span>
+          <a
+            href={loc.mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-auto flex items-center gap-1 text-primary underline-offset-2 hover:underline"
+          >
+            Maps <ExternalLink className="size-3" />
+          </a>
+        </div>
+      )}
     </div>
   );
 }
