@@ -1,20 +1,22 @@
-import { headers } from "next/headers";
-import Link from "next/link";
-import Image from "next/image";
-import QRCode from "qrcode";
-import { CheckCircle2, ExternalLink } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { QrDownload } from "@/components/rider/qr-download";
 import { PrintArts } from "@/components/rider/print-arts";
+import { QrDownload } from "@/components/rider/qr-download";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { getProfileByToken } from "@/lib/profile-repo";
+import { CheckCircle2, ExternalLink } from "lucide-react";
+import { headers } from "next/headers";
+import Image from "next/image";
+import Link from "next/link";
+import QRCode from "qrcode";
 
 export const dynamic = "force-dynamic";
 
 async function baseUrl(): Promise<string> {
   const h = await headers();
   const host = h.get("host") ?? "localhost:3000";
-  const proto = h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
+  const proto =
+    h.get("x-forwarded-proto") ??
+    (host.startsWith("localhost") ? "http" : "https");
   return `${proto}://${host}`;
 }
 
@@ -58,8 +60,8 @@ export default async function SucessoPage({
         </span>
         <h1 className="text-2xl font-extrabold">Seu Rider ID está pronto!</h1>
         <p className="text-sm text-muted-foreground">
-          Cole este QR Code no seu capacete. Ao escaneá-lo, qualquer pessoa acessa seu perfil de
-          emergência.
+          Cole este QR Code no seu capacete. Ao escaneá-lo, qualquer pessoa
+          acessa seu perfil de emergência.
         </p>
       </div>
 
@@ -81,7 +83,11 @@ export default async function SucessoPage({
 
       <div className="flex flex-col gap-2.5">
         <QrDownload dataUrl={qrDataUrl} filename={`rider-id-${token}.png`} />
-        <Button render={<Link href={`/perfil/${token}`} target="_blank" />} variant="secondary" size="lg">
+        <Button
+          render={<Link href={`/perfil/${token}`} target="_blank" />}
+          variant="secondary"
+          size="lg"
+        >
           <ExternalLink className="size-4" />
           Ver meu perfil de emergência
         </Button>
@@ -91,7 +97,6 @@ export default async function SucessoPage({
         firstName={profile?.firstName ?? ""}
         name={profile?.name ?? ""}
         bloodType={profile?.vitals.bloodType ?? ""}
-        theme={profile?.theme ?? "amber"}
         qrDataUrl={qrDataUrl}
         token={token}
       />

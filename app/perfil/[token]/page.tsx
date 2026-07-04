@@ -1,32 +1,32 @@
-import type { CSSProperties } from "react";
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import {
-  Phone,
-  Users,
-  TriangleAlert,
-  HeartPulse,
-  Hospital,
-  Navigation,
-  LifeBuoy,
-  ShieldCheck,
-  Bike,
-  ChevronRight,
-  Radio,
-} from "lucide-react";
-import { mapsDirUrl, themeAccent, type Profile } from "@/lib/profiles";
-import { getProfileByToken } from "@/lib/profile-repo";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { SensitiveReveal } from "@/components/rider/sensitive-reveal";
+import { ShareLocationButton } from "@/components/rider/share-location-button";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ShareLocationButton } from "@/components/rider/share-location-button";
-import { SensitiveReveal } from "@/components/rider/sensitive-reveal";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { getProfileByToken } from "@/lib/profile-repo";
+import { mapsDirUrl, themeAccent, type Profile } from "@/lib/profiles";
+import {
+  Bike,
+  ChevronRight,
+  HeartPulse,
+  Hospital,
+  LifeBuoy,
+  Navigation,
+  Phone,
+  Radio,
+  ShieldCheck,
+  TriangleAlert,
+  Users,
+} from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import type { CSSProperties } from "react";
 
 export const dynamic = "force-dynamic";
 
@@ -103,7 +103,8 @@ function EmergencyBlock({ profile }: { profile: Profile }) {
           {profile.firstName} está ferido(a)?
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Fale o nome dele(a) em voz alta e siga os passos abaixo. Você pode salvar uma vida.
+          Toque no ombro, chame pelo nome em voz alta. Se não responder, siga os
+          passos abaixo agora.
         </p>
 
         <div className="mt-4 flex gap-3 rounded-xl border border-border/60 bg-background/40 p-3">
@@ -111,8 +112,8 @@ function EmergencyBlock({ profile }: { profile: Profile }) {
           <p className="text-sm">
             <span className="font-semibold">Não remova o capacete.</span>{" "}
             <span className="text-muted-foreground">
-              Só se ele(a) não estiver respirando. Movê-lo errado pode causar lesão grave na
-              coluna. Espere o SAMU.
+              Só se ele(a) não estiver respirando. Movê-lo errado pode causar
+              lesão grave na coluna. Espere o SAMU.
             </span>
           </p>
         </div>
@@ -178,7 +179,8 @@ function ActionLink({
         <span className="block text-sm font-semibold">{title}</span>
         <span
           className={
-            "block text-xs " + (emergency ? "text-white/80" : "text-muted-foreground")
+            "block text-xs " +
+            (emergency ? "text-white/80" : "text-muted-foreground")
           }
         >
           {subtitle}
@@ -193,7 +195,9 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <div className="mb-2 flex items-center gap-2">
       <span className="h-4 w-1 rounded-full bg-primary" />
-      <h2 className="text-sm font-semibold text-muted-foreground">{children}</h2>
+      <h2 className="text-sm font-semibold text-muted-foreground">
+        {children}
+      </h2>
     </div>
   );
 }
@@ -280,7 +284,9 @@ function HospitalsCard({ profile }: { profile: Profile }) {
               <span
                 className={
                   "flex size-9 shrink-0 items-center justify-center rounded-lg " +
-                  (h.emergency ? "bg-success/15 text-success" : "bg-muted text-muted-foreground")
+                  (h.emergency
+                    ? "bg-success/15 text-success"
+                    : "bg-muted text-muted-foreground")
                 }
               >
                 <Hospital className="size-5" />
@@ -289,7 +295,8 @@ function HospitalsCard({ profile }: { profile: Profile }) {
                 <span className="block text-sm font-semibold">{h.name}</span>
                 <span
                   className={
-                    "block text-xs " + (h.emergency ? "text-success" : "text-muted-foreground")
+                    "block text-xs " +
+                    (h.emergency ? "text-success" : "text-muted-foreground")
                   }
                 >
                   {h.emergency ? "● " : ""}
@@ -297,8 +304,12 @@ function HospitalsCard({ profile }: { profile: Profile }) {
                 </span>
               </span>
               <span className="text-right">
-                <span className="block text-sm font-semibold">{h.distanceKm}</span>
-                <span className="block text-xs text-muted-foreground">{h.timeMin}</span>
+                <span className="block text-sm font-semibold">
+                  {h.distanceKm}
+                </span>
+                <span className="block text-xs text-muted-foreground">
+                  {h.timeMin}
+                </span>
               </span>
               <Navigation className="size-4 shrink-0 text-primary" />
             </a>
@@ -387,12 +398,20 @@ function MoreInfo({ profile }: { profile: Profile }) {
         <AccordionContent className="flex flex-col gap-4">
           <div>
             <div className="text-lg font-bold">{profile.name}</div>
-            <div className="text-sm text-muted-foreground">{profile.tagline}</div>
+            <div className="text-sm text-muted-foreground">
+              {profile.tagline}
+            </div>
           </div>
-          {(profile.moto.model || profile.moto.plate || profile.moto.healthPlan) && (
+          {(profile.moto.model ||
+            profile.moto.plate ||
+            profile.moto.healthPlan) && (
             <div className="flex flex-col gap-3">
               {profile.moto.model && (
-                <InfoRow icon={<Bike className="size-5" />} k="Moto" v={profile.moto.model} />
+                <InfoRow
+                  icon={<Bike className="size-5" />}
+                  k="Moto"
+                  v={profile.moto.model}
+                />
               )}
               {profile.moto.plate && (
                 <InfoRow
@@ -434,7 +453,10 @@ function Footer() {
         <br />
         Suas informações, sempre à mão de quem precisar.
       </p>
-      <Link href="/" className="mt-2 text-xs text-primary underline-offset-4 hover:underline">
+      <Link
+        href="/"
+        className="mt-2 text-xs text-primary underline-offset-4 hover:underline"
+      >
         Criar o meu Rider ID
       </Link>
     </footer>

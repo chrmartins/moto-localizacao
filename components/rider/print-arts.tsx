@@ -5,21 +5,15 @@ import { Download, FileImage } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import type { RiderTheme } from "@/lib/profiles";
 
-// Cores sólidas por tema, amigáveis para impressão.
-const THEME_HEX: Record<RiderTheme, string> = {
-  amber: "#f0902a",
-  red: "#e2452f",
-  blue: "#3b82f6",
-  green: "#1fb271",
-};
+// Detalhe sempre em vermelho de emergência (não segue o tema do perfil).
+const RED = "#dc2626";
+const RED_SOFT = "#fca5a5";
 
 type Props = {
   firstName: string;
   name: string;
   bloodType: string;
-  theme: RiderTheme;
   qrDataUrl: string;
   token: string;
 };
@@ -72,10 +66,9 @@ async function downloadPng(svg: SVGSVGElement | null, filename: string, scale = 
   }
 }
 
-export function PrintArts({ firstName, name, bloodType, theme, qrDataUrl, token }: Props) {
+export function PrintArts({ firstName, name, bloodType, qrDataUrl, token }: Props) {
   const stickerRef = useRef<SVGSVGElement>(null);
   const cardRef = useRef<SVGSVGElement>(null);
-  const accent = THEME_HEX[theme];
   const displayName = name || firstName || "Rider";
 
   return (
@@ -83,20 +76,15 @@ export function PrintArts({ firstName, name, bloodType, theme, qrDataUrl, token 
       <div>
         <h2 className="text-base font-bold">Artes para imprimir</h2>
         <p className="text-sm text-muted-foreground">
-          Baixe e leve a uma gráfica ou impressora. O adesivo vai no capacete; a carteirinha,
-          na carteira.
+          Sinalize que você tem um QR de emergência. O adesivo vai no capacete; a carteirinha,
+          na carteira. Baixe e leve a uma gráfica ou impressora.
         </p>
       </div>
 
       {/* Adesivo redondo */}
       <Card className="items-center gap-4 p-5">
         <span className="self-start text-sm font-semibold">Adesivo redondo · capacete</span>
-        <RoundSticker
-          ref={stickerRef}
-          firstName={firstName}
-          accent={accent}
-          qrDataUrl={qrDataUrl}
-        />
+        <RoundSticker ref={stickerRef} firstName={firstName} qrDataUrl={qrDataUrl} />
         <div className="flex w-full gap-2">
           <Button className="flex-1" onClick={() => downloadPng(stickerRef.current, `adesivo-rider-${token}.png`)}>
             <Download className="size-4" />
@@ -112,13 +100,7 @@ export function PrintArts({ firstName, name, bloodType, theme, qrDataUrl, token 
       {/* Carteirinha */}
       <Card className="items-center gap-4 p-5">
         <span className="self-start text-sm font-semibold">Carteirinha · carteira</span>
-        <WalletCard
-          ref={cardRef}
-          name={displayName}
-          bloodType={bloodType}
-          accent={accent}
-          qrDataUrl={qrDataUrl}
-        />
+        <WalletCard ref={cardRef} name={displayName} bloodType={bloodType} qrDataUrl={qrDataUrl} />
         <div className="flex w-full gap-2">
           <Button className="flex-1" onClick={() => downloadPng(cardRef.current, `carteirinha-rider-${token}.png`)}>
             <Download className="size-4" />
@@ -134,15 +116,25 @@ export function PrintArts({ firstName, name, bloodType, theme, qrDataUrl, token 
   );
 }
 
+/** Cruz médica branca (símbolo universal de socorro). */
+function MedicalCross({ cx, cy, s, fill = "#ffffff" }: { cx: number; cy: number; s: number; fill?: string }) {
+  const arm = s;
+  const th = s * 0.32;
+  return (
+    <g fill={fill}>
+      <rect x={cx - arm} y={cy - th / 2} width={arm * 2} height={th} rx={th / 3} />
+      <rect x={cx - th / 2} y={cy - arm} width={th} height={arm * 2} rx={th / 3} />
+    </g>
+  );
+}
+
 const RoundSticker = function RoundSticker({
   ref,
   firstName,
-  accent,
   qrDataUrl,
 }: {
   ref: React.Ref<SVGSVGElement>;
   firstName: string;
-  accent: string;
   qrDataUrl: string;
 }) {
   return (
@@ -154,25 +146,30 @@ const RoundSticker = function RoundSticker({
       xmlns="http://www.w3.org/2000/svg"
       className="w-full max-w-[240px]"
     >
-      <circle cx="210" cy="210" r="208" fill={accent} />
-      <circle cx="210" cy="210" r="192" fill="#0d0f12" />
-      <circle cx="210" cy="210" r="192" fill="none" stroke={accent} strokeOpacity="0.35" strokeWidth="2" />
+      <circle cx="210" cy="210" r="208" fill={RED} />
+      <circle cx="210" cy="210" r="190" fill="#0d0f12" />
+      {/* linha tracejada sugerindo recorte do adesivo */}
+      <circle cx="210" cy="210" r="199" fill="none" stroke="#ffffff" strokeOpacity="0.55" strokeWidth="1.5" strokeDasharray="4 5" />
 
-      <text x="210" y="66" textAnchor="middle" fill={accent} fontFamily="Arial, sans-serif" fontSize="27" fontWeight="800" letterSpacing="2">
-        EMERGÊNCIA
+      <MedicalCross cx={210} cy={44} s={13} />
+      <text x="210" y="80" textAnchor="middle" fill="#ffffff" fontFamily="Arial, sans-serif" fontSize="19" fontWeight="800" letterSpacing="1">
+        EM CASO DE ACIDENTE
       </text>
-      <text x="210" y="92" textAnchor="middle" fill="#cbd5e1" fontFamily="Arial, sans-serif" fontSize="15" letterSpacing="3">
+      <text x="210" y="101" textAnchor="middle" fill={RED_SOFT} fontFamily="Arial, sans-serif" fontSize="12.5" letterSpacing="2.5">
         ESCANEIE O QR CODE
       </text>
 
-      <rect x="112" y="110" width="196" height="196" rx="16" fill="#ffffff" />
-      <image href={qrDataUrl} x="126" y="124" width="168" height="168" />
+      <rect x="122" y="116" width="176" height="176" rx="16" fill="#ffffff" />
+      <image href={qrDataUrl} x="136" y="130" width="148" height="148" />
 
-      <text x="210" y="350" textAnchor="middle" fill={accent} fontFamily="Arial, sans-serif" fontSize="28" fontWeight="800" letterSpacing="1">
-        RIDER ID
+      <text x="210" y="330" textAnchor="middle" fill={RED} fontFamily="Arial, sans-serif" fontSize="19" fontWeight="800" letterSpacing="0.5">
+        ESCANEIE PARA AJUDAR
       </text>
-      <text x="210" y="374" textAnchor="middle" fill="#94a3b8" fontFamily="Arial, sans-serif" fontSize="15">
-        {firstName ? `${firstName} · aponte a câmera` : "aponte a câmera do celular"}
+      <text x="210" y="352" textAnchor="middle" fill="#cbd5e1" fontFamily="Arial, sans-serif" fontSize="12.5">
+        dados vitais · contato de emergência
+      </text>
+      <text x="210" y="382" textAnchor="middle" fill="#94a3b8" fontFamily="Arial, sans-serif" fontSize="13" fontWeight="700" letterSpacing="2">
+        {firstName ? `RIDER ID · ${firstName.toUpperCase()}` : "RIDER ID"}
       </text>
     </svg>
   );
@@ -182,16 +179,13 @@ const WalletCard = function WalletCard({
   ref,
   name,
   bloodType,
-  accent,
   qrDataUrl,
 }: {
   ref: React.Ref<SVGSVGElement>;
   name: string;
   bloodType: string;
-  accent: string;
   qrDataUrl: string;
 }) {
-  // Reduz a fonte do nome se for longo, para não estourar.
   const nameSize = name.length > 18 ? 30 : name.length > 13 ? 36 : 42;
   return (
     <svg
@@ -203,43 +197,46 @@ const WalletCard = function WalletCard({
       className="w-full"
     >
       <rect x="0" y="0" width="1012" height="638" rx="40" fill="#0d0f12" />
-      <rect x="0" y="0" width="1012" height="638" rx="40" fill="none" stroke={accent} strokeOpacity="0.35" strokeWidth="3" />
+      <rect x="1.5" y="1.5" width="1009" height="635" rx="38.5" fill="none" stroke={RED} strokeOpacity="0.5" strokeWidth="3" />
+
+      {/* Banner de emergência */}
+      <rect x="40" y="40" width="932" height="78" rx="18" fill={RED} />
+      <MedicalCross cx={92} cy={79} s={17} />
+      <text x="140" y="90" fill="#ffffff" fontFamily="Arial, sans-serif" fontSize="30" fontWeight="800" letterSpacing="0.5">
+        EM CASO DE ACIDENTE — ESCANEIE
+      </text>
 
       {/* QR à esquerda */}
-      <rect x="56" y="139" width="360" height="360" rx="24" fill="#ffffff" />
-      <image href={qrDataUrl} x="80" y="163" width="312" height="312" />
-      <text x="236" y="540" textAnchor="middle" fill="#94a3b8" fontFamily="Arial, sans-serif" fontSize="26">
-        Aponte a câmera
+      <rect x="56" y="150" width="330" height="330" rx="24" fill="#ffffff" />
+      <image href={qrDataUrl} x="80" y="174" width="282" height="282" />
+      <text x="221" y="522" textAnchor="middle" fill="#94a3b8" fontFamily="Arial, sans-serif" fontSize="24">
+        Aponte a câmera do celular
       </text>
 
       {/* Info à direita */}
-      <text x="470" y="150" fill={accent} fontFamily="Arial, sans-serif" fontSize="46" fontWeight="800" letterSpacing="1">
+      <text x="430" y="212" fill="#ffffff" fontFamily="Arial, sans-serif" fontSize="40" fontWeight="800" letterSpacing="1">
         RIDER ID
       </text>
-      <rect x="472" y="168" width="96" height="7" rx="3.5" fill={accent} />
-      <text x="470" y="212" fill="#94a3b8" fontFamily="Arial, sans-serif" fontSize="24">
-        Perfil de emergência do motociclista
+      <rect x="432" y="230" width="86" height="6" rx="3" fill={RED} />
+      <text x="430" y="278" fill="#9aa4b2" fontFamily="Arial, sans-serif" fontSize="23">
+        Escaneie para acessar meus dados
+      </text>
+      <text x="430" y="308" fill="#9aa4b2" fontFamily="Arial, sans-serif" fontSize="23">
+        vitais, contato e assistência 24h.
       </text>
 
-      <text x="470" y="288" fill="#6b7280" fontFamily="Arial, sans-serif" fontSize="21" letterSpacing="2">
+      <text x="430" y="374" fill="#6b7280" fontFamily="Arial, sans-serif" fontSize="20" letterSpacing="2">
         NOME
       </text>
-      <text x="470" y="332" fill="#ffffff" fontFamily="Arial, sans-serif" fontSize={nameSize} fontWeight="700">
+      <text x="430" y="416" fill="#ffffff" fontFamily="Arial, sans-serif" fontSize={nameSize} fontWeight="700">
         {name}
       </text>
 
-      <text x="470" y="404" fill="#6b7280" fontFamily="Arial, sans-serif" fontSize="21" letterSpacing="2">
+      <text x="430" y="478" fill="#6b7280" fontFamily="Arial, sans-serif" fontSize="20" letterSpacing="2">
         TIPO SANGUÍNEO
       </text>
-      <text x="470" y="450" fill={accent} fontFamily="Arial, sans-serif" fontSize="42" fontWeight="800">
+      <text x="430" y="522" fill={RED} fontFamily="Arial, sans-serif" fontSize="40" fontWeight="800">
         {bloodType || "—"}
-      </text>
-
-      <text x="470" y="524" fill="#9aa4b2" fontFamily="Arial, sans-serif" fontSize="22">
-        Escaneie o QR para dados vitais
-      </text>
-      <text x="470" y="554" fill="#9aa4b2" fontFamily="Arial, sans-serif" fontSize="22">
-        e contato de emergência.
       </text>
     </svg>
   );
