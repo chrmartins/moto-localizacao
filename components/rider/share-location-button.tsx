@@ -54,11 +54,11 @@ export function ShareLocationButton({
     );
   }
 
-  /* ── mapa (≈3 cm de altura) ── */
+  /* ── mapa (≈4 cm de altura) ── */
   const mapArea = (() => {
     if (loc.status === "loading") {
       return (
-        <div className="flex h-30 items-center justify-center rounded-xl border border-border bg-muted/40">
+        <div className="flex h-40 items-center justify-center rounded-xl border border-border bg-muted/40">
           <div className="flex flex-col items-center gap-2 text-muted-foreground">
             <Loader2 className="size-4 animate-spin" />
             <span className="text-xs">Obtendo localização…</span>
@@ -70,7 +70,7 @@ export function ShareLocationButton({
       return (
         <button
           onClick={requestGeo}
-          className="flex h-30 w-full items-center justify-center rounded-xl border border-border bg-muted/40 text-muted-foreground"
+          className="flex h-40 w-full items-center justify-center rounded-xl border border-border bg-muted/40 text-muted-foreground"
         >
           <div className="flex flex-col items-center gap-1.5">
             <MapPin className="size-4" />
@@ -92,7 +92,7 @@ export function ShareLocationButton({
         <iframe
           src={embedUrl}
           width="100%"
-          height="120"
+          height="160"
           className="block border-0"
           title="Localização do acidente"
         />
