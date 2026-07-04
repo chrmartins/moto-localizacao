@@ -7,8 +7,7 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    // Roda em tudo, menos assets estáticos e imagens.
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-  ],
+  // Só protege/renova sessão no /painel. Páginas públicas (perfil, landing,
+  // criar) navegam sem a chamada de rede ao Supabase — mantém o SPA fluido.
+  matcher: ["/painel/:path*"],
 };

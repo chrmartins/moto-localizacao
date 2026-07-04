@@ -210,9 +210,7 @@ async function ProfileSection({
               filename={`rider-id-${profile.token}.png`}
             />
             <Button
-              render={
-                <Link href={`/perfil/${profile.token}`} target="_blank" />
-              }
+              render={<Link href={`/perfil/${profile.token}`} />}
               variant="secondary"
               size="lg"
             >
